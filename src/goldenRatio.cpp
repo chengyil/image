@@ -71,8 +71,16 @@ float calGoldenRatio(dlib::rectangle &faceRect, full_object_detection &landmarks
   return _goldenRatio;
 }
 
-int main(int argc, char** argv)
+int main(int argc, char* argv[])
 {
+  if(argc == 1)
+  {
+    cout << "Please provide image file in fixture directory." << endl;
+    return  EXIT_FAILURE;
+  }
+
+  string filename = argv[1];
+
   // Get the face detector
   frontal_face_detector faceDetector = get_frontal_face_detector();
 
@@ -83,8 +91,8 @@ int main(int argc, char** argv)
   deserialize("../config/shape_predictor_68_face_landmarks.dat") >> landmarkDetector;
 
   // Read Image
-  string imageFilename("../fixture/images/test.jpg");
-  cv::Mat im = cv::imread(imageFilename);
+  string imagePath("../fixture/images/");
+  cv::Mat im = cv::imread(imagePath + filename);
 
   // Convert OpenCV image format to Dlib's image format
   cv_image<bgr_pixel> dlibIm(im);
@@ -99,13 +107,14 @@ int main(int argc, char** argv)
     // For every face rectangle, run landmarkDetector
     full_object_detection landmarks = landmarkDetector(dlibIm, faceRects[i]);
     float goldenRatio = calGoldenRatio(faceRects[i], landmarks);
+    cout << "Golden Ratio : " << goldenRatio << endl;
     drawLandmarksAndRatio(im, landmarks, faceRects[i], goldenRatio);
   }
 
   // Save image
-  string outputFilename("../result/result.jpg");
-  cout << "Saving output image to " << outputFilename << endl;
-  cv::imwrite(outputFilename, im);
+  string outputFilename("../result/");
+  cout << "Saving output image to " << (outputFilename + filename) << endl;
+  cv::imwrite(outputFilename + filename, im);
 
   return EXIT_SUCCESS;
 }

@@ -1,1 +1,1 @@
-docker-compose run --rm run
+docker-compose run --rm run $1

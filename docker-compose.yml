@@ -20,4 +20,5 @@ services:
     entrypoint: /bin/bash -c "cd /root/image/src/build && cmake --build . --config Release"
   run:
     <<: *build
-    entrypoint: /bin/bash -c "cd /root/image/bin && ./goldenRatio"
+    working_dir: "/root/image/bin"
+    entrypoint: ./goldenRatio

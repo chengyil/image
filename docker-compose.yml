@@ -1,0 +1,23 @@
+version: "3.2"
+services:
+  build: &build
+    image: spmallick/opencv-docker:opencv
+    volumes:
+      - type: "bind"
+        source: .
+        target: /root/image
+      - type: "bind"
+        source: /tmp/.X11-unix
+        target: /tmp/.X11-unix
+    environment:
+      DISPLAY: $DISPLAY
+    ports:
+      - "5000:5000"
+      - "8000:8000"
+    entrypoint: /bin/bash -c "mkdir -p /root/image/src/build && cd /root/image/src/build && cmake .."
+  make:
+    <<: *build
+    entrypoint: /bin/bash -c "cd /root/image/src/build && cmake --build . --config Release"
+  run:
+    <<: *build
+    entrypoint: /bin/bash -c "cd /root/image/bin && ./goldenRatio"

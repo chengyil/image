@@ -10,7 +10,18 @@ services:
   make:
     <<: *build
     entrypoint: /bin/bash -c "cd /root/image/src/build && cmake --build . --config Release"
+  bash:
+    <<: *build
+    working_dir: "/root/image/bin"
+    entrypoint: /bin/bash
   run:
     <<: *build
     working_dir: "/root/image/bin"
-    entrypoint: ./goldenRatio
+    entrypoint: ./app
+  test:
+    image: m03geek/opencv-dlib:stretch
+    volumes:
+      - type: "bind"
+        source: .
+        target: /root/image
+    entrypoint: /bin/bash 

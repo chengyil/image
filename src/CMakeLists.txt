@@ -10,6 +10,8 @@ PROJECT(feature)
 #SET(OpenCV_DIR Enter-the-path-of-OpenCV-installation-on-your-system)
 SET(OpenCV_DIR /root/installation/OpenCV-3.4.4/share/OpenCV)
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY /root/image/bin)
+# Enable -fPIC for shared library for dlib
+SET(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 ################### OpenCV_DIR Examples  #####################
 
@@ -29,19 +31,25 @@ SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY /root/image/bin)
 #############  Common Instructions for all Users  ############
 find_package( OpenCV REQUIRED )
 
+include_directories( ../include )
 include_directories( ${OpenCV_INCLUDE_DIRS})
 include(/root/common/dlib/dlib/cmake)
 
-MACRO(add_example name)
+MACRO(add_opencv_exe name)
   ADD_EXECUTABLE(${name} ${name}.cpp)
-  TARGET_LINK_LIBRARIES(${name} dlib::dlib ${OpenCV_LIBS})
+  TARGET_LINK_LIBRARIES(${name} dlib::dlib ${OpenCV_LIBS} goldenRatio)
 ENDMACRO()
 
 MACRO(add_exe name)
   ADD_EXECUTABLE(${name} ${name}.cpp)
-  TARGET_LINK_LIBRARIES(${name})
 ENDMACRO()
 
+MACRO(add_opencv_lib name)
+  ADD_LIBRARY (${name} SHARED
+    ${name}.cpp)
+  TARGET_LINK_LIBRARIES(${name} dlib::dlib ${OpenCV_LIBS})
+ENDMACRO()
 
-add_example(goldenRatio)
+add_opencv_lib(goldenRatio)
+add_opencv_exe(app)
 add_exe(tree)

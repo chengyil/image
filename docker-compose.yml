@@ -19,9 +19,9 @@ services:
     working_dir: "/root/image/bin"
     entrypoint: ./app
   test:
-    image: m03geek/opencv-dlib:stretch
+    build: .
     volumes:
       - type: "bind"
         source: .
         target: /root/image
-    entrypoint: /bin/bash 
+    entrypoint: /bin/bash -c "source /etc/profile.d/rvm.sh"
